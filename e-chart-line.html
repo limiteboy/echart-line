@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="zh-CN">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>夜空星辰-百度折线图</title>
+    <meta name="keywords" content="HTML5,canvas,折线图,曲线图,曲线,折线">
+    <meta name="description" content="使用百度echart制作的折线图">
+</head>
+<body>
+    <!-- 主体（一般只改变这里的内容） -->
+    <div class="blog-body">
+        <div class="blog-container">
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div class="" style="text-align: right;"><input type="checkbox" id="tagShowChecked" value="1" onchange="tagShowNum(this)">显示数值</div>
+            <div id="main-0" style="width: 1200px;height:700px;"></div>
+        </div>
+    </div>
+
+    <script src="./js/echarts.min.js"></script>
+	<script src="./js/jquery-1.11.2.min.js"></script>
+
+</body>
+</html>
+<script>
+    var labelFlag = false;//图表是否显示数值
+
+
+    //生成随机数
+    function randomNum(){
+       return Math.round(Math.random() *30);
+    }
+
+    var xData = [];
+    var numDataOne = [];//第一组数据
+    var numDataTwo = [];//第二组数据
+    var arrDataOne = [];
+    for (var i = 0 ; i <= 30; i++){
+        var randNum = randomNum();
+        var randNumOne = randomNum();
+        xData.push(i);
+        //numDataOne.push(randomNum());
+        numDataOne.push({'name':randNumOne,'value':[i, randNumOne]});
+        numDataTwo.push(randomNum());
+        if(i%5 == 0){
+            arrDataOne.push({'name':randNum,'value':[i, randNum]});
+        }
+    }
+
+    tagShowNum('#tagShowChecked');
+
+
+
+    function tagShowNum(obj){
+        if($(obj).is(':checked')){
+            labelFlag = true;
+        }else{
+            labelFlag = false;
+        }
+        //myChart.setOption(option);
+        changChartLine();
+    }
+    function changChartLine(){
+        var option = {
+            title: {
+                text: 'test演示数据',
+                subtext: '纯属虚构'
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}'
+            },
+            legend: {
+                data: ['第一组数据', '第二组数据','test']
+            },
+            /* toolbox: {
+             show: true,
+             feature: {
+             dataZoom: {
+             yAxisIndex: 'none'
+             },
+             dataView: {
+             readOnly: false
+             },
+             magicType: {
+             type: ['line', 'bar']
+             },
+             restore: {},
+             saveAsImage: {}
+             }
+             },*/
+            xAxis: {
+                type: 'value',
+                min: 0,
+                max: 30,
+                boundaryGap: false,
+                interval: 5,
+                data: xData,
+                axisLabel:{
+                    formatter: '{value}'
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} °C'
+                }
+            },
+            series: [
+                {
+                    name: 'test',
+                    type: 'line',
+                    data: arrDataOne,
+                    label: {
+                        normal: {
+                            show: labelFlag,
+                            formatter: '{b}',
+                            position: 'top' //值显示
+                        }
+                    },
+                },
+                {
+                    name: '第一组数据',
+                    type: 'line',
+                    connectNulls:true,
+                    //symbolSize: 35,
+                    //symbol: 'circle',
+                    data: numDataOne,
+                    /* itemStyle: {
+                     normal: {
+                     // color:'red'
+                     borderType: "solid"
+                     }
+                     },*/
+                    label: {
+                        normal: {
+                            show: labelFlag,
+                            formatter: '{b}',
+                            position: 'top' //值显示
+                        }
+                    },
+                    /*markPoint: {
+                     data: [{
+                     type: 'max',
+                     name: '最大值',
+                     symbolSize: "25",
+                     value: "nihao",
+                     symbol: "circle"
+                     }, {
+                     type: 'min',
+                     name: '最小值'
+                     },
+
+                     {
+                     type: 'max',
+                     name: '最小值'
+                     }
+                     ]
+                     },
+                     markLine: {
+                     data: [{
+                     type: 'average',
+                     name: '平均值'
+                     }]
+                     }*/
+                }, {
+                    name: '第二组数据',
+                    type: 'line',
+                    data: numDataTwo,
+                    label: {
+                        normal: {
+                            show: labelFlag,
+                            formatter: '{c}',
+                            position: 'top' //值显示
+                        }
+                    },
+                    /*markPoint: {
+                     data: [{
+                     name: '周最低',
+                     value: -2,
+                     xAxis: 1,
+                     yAxis: -1.5
+                     }]
+                     },
+                     markLine: {
+                     data: [{
+                     type: 'average',
+                     name: '平均值'
+                     },
+                     [{
+                     symbol: 'none',
+                     x: '90%',
+                     yAxis: 'max'
+                     }, {
+                     symbol: 'circle',
+                     label: {
+                     normal: {
+                     position: 'start',
+                     formatter: '最大值'
+                     }
+                     },
+                     type: 'max',
+                     name: '最高点'
+                     }]
+                     ]
+                     }*/
+                }]
+        };
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main-0'));
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+</script>
